@@ -1,11 +1,14 @@
 {
   "name": "simple-axios-wechat",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "简易的axios微信小程序版使用typescript实现",
   "scripts": {
     "build": "vite build && tsc"
   },
-  "keywords": ["axios", "wechat"],
+  "keywords": [
+    "axios",
+    "wechat"
+  ],
   "author": "Jaye",
   "license": "MIT",
   "repository": {
@@ -13,7 +16,9 @@
     "url": "https://github.com/lei1248276/simple-axios-wechat"
   },
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/simple-axios-wechat.cjs",
   "module": "./dist/simple-axios-wechat.js",
   "exports": {
