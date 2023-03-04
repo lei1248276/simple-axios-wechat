@@ -1,0 +1,22 @@
+{
+  "name": "simple-axios-wechat",
+  "version": "0.0.1",
+  "description": "简易的axios微信小程序版",
+  "scripts": {},
+  "keywords": [
+    "axios",
+    "wechat"
+  ],
+  "author": "Jaye",
+  "license": "",
+  "dependencies": {},
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.2.0",
+    "@types/node": "^18.14.4",
+    "@typescript-eslint/parser": "^5.54.0",
+    "eslint": "^8.35.0",
+    "miniprogram-api-typings": "^2.8.3-1",
+    "typescript": "^4.9.5",
+    "vite": "^4.1.4"
+  }
+}
