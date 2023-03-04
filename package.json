@@ -1,11 +1,11 @@
 {
   "name": "simple-axios-wechat",
   "version": "0.0.1",
-  "description": "简易的axios微信小程序版",
+  "description": "简易的axios微信小程序版使用typescript实现",
   "scripts": {},
   "keywords": ["axios", "wechat"],
   "author": "Jaye",
-  "license": "",
+  "license": "MIT",
   "type": "module",
   "files": ["dist"],
   "main": "./dist/simple-axios-wechat.umd.cjs",
