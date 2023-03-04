@@ -6,6 +6,10 @@
   "keywords": ["axios", "wechat"],
   "author": "Jaye",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lei1248276/simple-axios-wechat"
+  },
   "type": "module",
   "files": ["dist"],
   "main": "./dist/simple-axios-wechat.umd.cjs",
