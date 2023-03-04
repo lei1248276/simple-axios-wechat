@@ -1,0 +1,6 @@
+// index.ts
+
+Page({
+  data: {
+  }
+})
