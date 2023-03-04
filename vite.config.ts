@@ -5,7 +5,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'miniprogram/src/simpleAxios/index.ts'),
-      name: 'SimpleAxios'
+      name: 'SimpleAxios',
+      formats: ['es', 'cjs']
     }
   }
 })
