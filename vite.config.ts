@@ -1,12 +1,11 @@
 import { defineConfig } from 'vite'
-import path from 'path'
+import { resolve } from 'path'
 
 export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve(process.cwd(), 'miniprogram/src/simpleAxios.ts'),
-      name: 'SimpleAxios',
-      formats: ['es']
+      entry: resolve(__dirname, 'miniprogram/src/simpleAxios/index.ts'),
+      name: 'SimpleAxios'
     }
   }
 })
