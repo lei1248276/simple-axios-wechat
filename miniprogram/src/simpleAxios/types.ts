@@ -1,14 +1,16 @@
-export interface DefaultConfig{
+type RequestOption = Parameters<typeof wx.request>[0]
+
+type RequestTask = ReturnType<typeof wx.request>
+
+export interface DefaultConfig extends Omit<RequestOption, 'url' | 'success' | 'fail' | 'complete'>{
   baseURL?: string
-  header?: any
-  timeout?: number
-  adapter?: ((config: RequestConfig) => Promise<any>) | null
+  adapter?: (config: RequestConfig) => Promise<any>
 }
 
-export type RequestConfig =
-  Parameters<typeof wx.request>[0]
-  & { getRequestTask?: (task: ReturnType<typeof wx.request>) => void }
-  & DefaultConfig
+export interface RequestConfig extends Omit<RequestOption, 'success' | 'fail'>{
+  baseURL?: string
+  getRequestTask?: (task: RequestTask) => void
+}
 
 export interface Response {
   data: any
