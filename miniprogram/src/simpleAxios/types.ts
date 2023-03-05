@@ -1,24 +1,17 @@
-type RequestOption = Parameters<typeof wx.request>[0]
-
-type RequestTask = ReturnType<typeof wx.request>
-
-export interface DefaultConfig extends Omit<RequestOption, 'url' | 'success' | 'fail' | 'complete'>{
+export interface DefaultConfig extends Omit<WechatMiniprogram.RequestOption, 'url' | 'success' | 'fail' | 'complete'>{
   baseURL?: string
-  adapter?: (config: RequestConfig) => Promise<any>
+  adapter?: (config: RequestConfig) => Promise<Response<ResponseResult>>
 }
 
-export interface RequestConfig extends Omit<RequestOption, 'success' | 'fail'>{
+export interface RequestConfig extends Omit<WechatMiniprogram.RequestOption, 'success' | 'fail'>{
   baseURL?: string
-  getRequestTask?: (task: RequestTask) => void
+  getRequestTask?: (task: WechatMiniprogram.RequestTask) => void
 }
 
-export interface Response {
-  data: any
-  header: any
-  errMsg: string
-  statusCode: number
-  statusText: string
-}
+// ! 接口返回的数据类型
+export type ResponseResult = string | Record<string, any> | ArrayBuffer
+
+export interface Response<T extends ResponseResult> extends WechatMiniprogram.RequestSuccessCallbackResult<T> {}
 
 export interface InterceptorsHandler<V> {
   fulfilled: ((value: V) => V | Promise<V>) | null

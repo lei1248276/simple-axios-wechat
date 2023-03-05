@@ -2,6 +2,7 @@ import type {
   DefaultConfig,
   RequestConfig,
   Response,
+  ResponseResult,
   InterceptorsHandler
 } from './types'
 import {
@@ -16,16 +17,17 @@ class SimpleAxios {
     this.defaults = instanceConfig
     this.interceptors = {
       request: new Interceptors<RequestConfig>(),
-      response: new Interceptors<Response>()
+      response: new Interceptors<Response<ResponseResult>>()
     }
   }
 
-  request<T = Response>(config: RequestConfig): Promise<T> {
+  request<T extends ResponseResult>(config: RequestConfig): Promise<Response<T>> {
     config = { ...this.defaults, ...config }
+    config.url = isExternal(config.url) ? config.url : config.baseURL + config.url
 
     const chain: [
-      ((value: any) => any | Promise<any>) | null,
-      ((error: any) => any) | null
+      InterceptorsHandler<any>['fulfilled'] | null,
+      InterceptorsHandler<any>['rejected'] | null
     ] = [this.defaults?.adapter || dispatchRequest, null]
 
     this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
@@ -45,35 +47,35 @@ class SimpleAxios {
     return promise
   }
 
-  options<T = Response>(url = '', config: Omit<RequestConfig, 'url'> = {}): Promise<T> {
+  options<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<T>({ method: 'OPTIONS', url, ...config })
   }
 
-  get<T = Response>(url = '', config: Omit<RequestConfig, 'url'> = {}): Promise<T> {
+  get<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<T>({ method: 'GET', url, ...config })
   }
 
-  head<T = Response>(url = '', config: Omit<RequestConfig, 'url'> = {}): Promise<T> {
+  head<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<T>({ method: 'HEAD', url, ...config })
   }
 
-  post<T = Response>(url = '', config: Omit<RequestConfig, 'url'> = {}): Promise<T> {
+  post<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<T>({ method: 'POST', url, ...config })
   }
 
-  put<T = Response>(url = '', config: Omit<RequestConfig, 'url'> = {}): Promise<T> {
+  put<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<T>({ method: 'PUT', url, ...config })
   }
 
-  delete<T = Response>(url = '', config: Omit<RequestConfig, 'url'> = {}): Promise<T> {
+  delete<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<T>({ method: 'DELETE', url, ...config })
   }
 
-  trace<T = Response>(url = '', config: Omit<RequestConfig, 'url'> = {}): Promise<T> {
+  trace<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<T>({ method: 'TRACE', url, ...config })
   }
 
-  connect<T = Response>(url = '', config: Omit<RequestConfig, 'url'> = {}): Promise<T> {
+  connect<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<T>({ method: 'CONNECT', url, ...config })
   }
 }
@@ -102,17 +104,12 @@ class Interceptors<V> {
   }
 }
 
-function dispatchRequest(config: RequestConfig): Promise<Response> {
+function dispatchRequest(config: RequestConfig): Promise<Response<ResponseResult>> {
   return new Promise((resolve, reject) => {
     const RequestTask = wx.request({
       ...config,
-      url: isExternal(config.url) ? config.url : config.baseURL + config.url,
-      success: (res: any) => {
-        resolve(res)
-      },
-      fail: (err: any) => {
-        reject(err)
-      }
+      success: (res) => { resolve(res) },
+      fail: (err) => { reject(err) }
     })
     // ! 通过回调暴露RequestTask
     config.getRequestTask && config.getRequestTask(RequestTask)
@@ -120,7 +117,7 @@ function dispatchRequest(config: RequestConfig): Promise<Response> {
 }
 
 interface SimpleAxiosInstance extends SimpleAxios{
-  <T = Response>(config: RequestConfig): Promise<T>
+  <T extends ResponseResult>(config: RequestConfig): Promise<Response<T>>
   defaults: DefaultConfig
   create(config?: DefaultConfig): SimpleAxiosInstance
 }
@@ -138,8 +135,7 @@ function createInstance(defaultConfig: DefaultConfig): SimpleAxiosInstance {
 
 const defaults: DefaultConfig = {
   baseURL: '',
-  header: {},
-  adapter: null
+  header: {}
 }
 
 const simpleAxios = createInstance(defaults)
