@@ -7,7 +7,7 @@ function d(s, e) {
     typeof e[u] == "function" && (r[u] = e[u].bind(s));
   }), r;
 }
-class h {
+class l {
   constructor(e) {
     this.defaults = e, this.interceptors = {
       request: new o(),
@@ -16,12 +16,12 @@ class h {
   }
   request(e) {
     var u;
-    e = { ...this.defaults, ...e };
+    e = { ...this.defaults, ...e }, e.url = a(e.url) ? e.url : e.baseURL + e.url;
     const t = [((u = this.defaults) == null ? void 0 : u.adapter) || p, null];
-    this.interceptors.request.forEach(function(l) {
-      t.unshift(l.fulfilled, l.rejected);
-    }), this.interceptors.response.forEach(function(l) {
-      t.push(l.fulfilled, l.rejected);
+    this.interceptors.request.forEach(function(h) {
+      t.unshift(h.fulfilled, h.rejected);
+    }), this.interceptors.response.forEach(function(h) {
+      t.push(h.fulfilled, h.rejected);
     });
     let n = Promise.resolve(e), r = 0;
     for (; r < t.length; )
@@ -76,7 +76,6 @@ function p(s) {
   return new Promise((e, t) => {
     const n = wx.request({
       ...s,
-      url: a(s.url) ? s.url : s.baseURL + s.url,
       success: (r) => {
         e(r);
       },
@@ -88,15 +87,14 @@ function p(s) {
   });
 }
 function c(s) {
-  const e = new h(s), t = h.prototype.request.bind(e);
+  const e = new l(s), t = l.prototype.request.bind(e);
   return t.create = function(n) {
     return c({ ...s, ...n });
-  }, Object.assign(t, d(e, h.prototype), e);
+  }, Object.assign(t, d(e, l.prototype), e);
 }
 const f = {
   baseURL: "",
-  header: {},
-  adapter: null
+  header: {}
 }, q = c(f);
 export {
   q as default

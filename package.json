@@ -1,6 +1,6 @@
 {
   "name": "simple-axios-wechat",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "简易的axios微信小程序版使用typescript实现",
   "keywords": [
     "axios",
