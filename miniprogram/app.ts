@@ -7,10 +7,29 @@ App({
     /* const simpleAxios = SimpleAxios.create({
       baseURL: 'http://httpbin.org/get',
       timeout: 10 * 1000
-      //! adapter: 自定义处理请求方法，要求返回一个Promise
+      //! adapter?: 自定义处理请求方法，要求返回一个Promise
     })*/
+
     SimpleAxios.defaults.baseURL = 'http://httpbin.org/get'
     SimpleAxios.defaults.timeout = 10 * 1000
+    SimpleAxios.defaults.header = { token: '??' }
+    SimpleAxios.defaults.adapter = function adapter(config) {
+      return new Promise((resolve, reject) => {
+        const RequestTask = wx.request({
+          ...config,
+          success: (res) => {
+            console.log('%c🚀 ~ method: adapter ~', 'color: #F25F5C;font-weight: bold;', res)
+            resolve(res)
+          },
+          fail: (err) => {
+            reject(err)
+          }
+        })
+        // ! 自定义adapter需要手动通过回调暴露RequestTask
+        config.getRequestTask && config.getRequestTask(RequestTask)
+      })
+    }
+
     console.log('%c🚀 ~ method: onLaunch ~', 'color: #F25F5C;font-weight: bold;', { SimpleAxios })
 
     SimpleAxios.interceptors.request.use((res) => {
@@ -24,7 +43,6 @@ App({
       console.log('%c🚀 ~ method: response ~', 'color: #F25F5C;font-weight: bold;', res)
       return res.statusCode === 200 ? res : Promise.reject(res)
     }, (err) => {
-      console.error('response:', err)
       return Promise.reject(err)
     })
 
