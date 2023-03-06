@@ -1,13 +1,14 @@
-function a(s) {
+function d(s) {
   return /^(https?:)/.test(s);
 }
-function d(s, e) {
-  const t = ["constructor"], n = Object.getOwnPropertyNames(e).filter((u) => !t.includes(u)), r = {};
-  return n.forEach((u) => {
-    typeof e[u] == "function" && (r[u] = e[u].bind(s));
-  }), r;
+function p(s, e) {
+  const t = ["constructor"];
+  return Object.getOwnPropertyNames(e).filter((r) => !t.includes(r)).forEach((r) => {
+    const u = e[r];
+    s[r] = typeof u == "function" ? u.bind(s) : u;
+  }), s;
 }
-class l {
+class h {
   constructor(e) {
     this.defaults = e, this.interceptors = {
       request: new o(),
@@ -16,12 +17,12 @@ class l {
   }
   request(e) {
     var u;
-    e = { ...this.defaults, ...e }, e.url = a(e.url) ? e.url : e.baseURL + e.url;
-    const t = [((u = this.defaults) == null ? void 0 : u.adapter) || p, null];
-    this.interceptors.request.forEach(function(h) {
-      t.unshift(h.fulfilled, h.rejected);
-    }), this.interceptors.response.forEach(function(h) {
-      t.push(h.fulfilled, h.rejected);
+    e = { ...this.defaults, ...e }, e.url = d(e.url) ? e.url : e.baseURL + e.url;
+    const t = [((u = this.defaults) == null ? void 0 : u.adapter) || f, null];
+    this.interceptors.request.forEach(function(l) {
+      t.unshift(l.fulfilled, l.rejected);
+    }), this.interceptors.response.forEach(function(l) {
+      t.push(l.fulfilled, l.rejected);
     });
     let n = Promise.resolve(e), r = 0;
     for (; r < t.length; )
@@ -72,7 +73,7 @@ class o {
     });
   }
 }
-function p(s) {
+function f(s) {
   return new Promise((e, t) => {
     const n = wx.request({
       ...s,
@@ -86,16 +87,18 @@ function p(s) {
     s.getRequestTask && s.getRequestTask(n);
   });
 }
-function c(s) {
-  const e = new l(s), t = l.prototype.request.bind(e);
-  return t.create = function(n) {
-    return c({ ...s, ...n });
-  }, Object.assign(t, d(e, l.prototype), e);
+function i(s) {
+  const e = new h(s), t = h.prototype.request.bind(e);
+  return Object.assign(t, p(e, h.prototype));
 }
-const f = {
+const c = {
   baseURL: "",
   header: {}
-}, q = c(f);
+}, q = Object.assign(i(c), {
+  create(s) {
+    return i({ ...c, ...s });
+  }
+});
 export {
   q as default
 };

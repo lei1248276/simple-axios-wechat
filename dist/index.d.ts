@@ -25,8 +25,12 @@ declare class Interceptors<V> {
 }
 interface SimpleAxiosInstance extends SimpleAxios {
     <T extends ResponseResult>(config: RequestConfig): Promise<Response<T>>;
-    defaults: DefaultConfig;
+    defaults: DefaultConfig & {
+        header: Record<string, any>;
+    };
+}
+interface SimpleAxiosStatic extends SimpleAxiosInstance {
     create(config?: DefaultConfig): SimpleAxiosInstance;
 }
-declare const simpleAxios: SimpleAxiosInstance;
+declare const simpleAxios: SimpleAxiosStatic;
 export default simpleAxios;
