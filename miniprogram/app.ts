@@ -12,8 +12,8 @@ App({
 
     SimpleAxios.defaults.baseURL = 'http://httpbin.org/get'
     SimpleAxios.defaults.timeout = 10 * 1000
-    SimpleAxios.defaults.header = { token: '??' }
-    SimpleAxios.defaults.adapter = function adapter(config) {
+    SimpleAxios.defaults.header = { token: '???' }
+    /* SimpleAxios.defaults.adapter = function adapter(config) {
       return new Promise((resolve, reject) => {
         const RequestTask = wx.request({
           ...config,
@@ -28,21 +28,24 @@ App({
         // ! 自定义adapter需要手动通过回调暴露RequestTask
         config.getRequestTask && config.getRequestTask(RequestTask)
       })
-    }
+    }*/
 
     console.log('%c🚀 ~ method: onLaunch ~', 'color: #F25F5C;font-weight: bold;', { SimpleAxios })
 
     SimpleAxios.interceptors.request.use((res) => {
       console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res)
       return res
+      // return Promise.reject(res)
     }, (err) => {
       console.error('request:', err)
+      return Promise.reject(err)
     })
 
     SimpleAxios.interceptors.response.use((res) => {
       console.log('%c🚀 ~ method: response ~', 'color: #F25F5C;font-weight: bold;', res)
       return res.statusCode === 200 ? res : Promise.reject(res)
     }, (err) => {
+      console.error('response:', err)
       return Promise.reject(err)
     })
 
@@ -51,13 +54,21 @@ App({
     })
     console.log('%c🚀 ~ method: onLaunch ~', 'color: #F25F5C;font-weight: bold;', { simpleAxios })
 
-    /* SimpleAxios.get('').then(res => {
-      console.log('%c🚀 ~ method: SimpleAxios.get ~', 'color: #F25F5C;font-weight: bold;', res)
-    })*/
+    simpleAxios.interceptors.request.use((res) => {
+      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res)
+      return res
+    }, (err) => {
+      console.error('request:', err)
+      return Promise.reject(err)
+    })
 
-    /* simpleAxios.post('').then(res => {
-      console.log('%c🚀 ~ method: simpleAxios.post ~', 'color: #F25F5C;font-weight: bold;', res)
-    })*/
+    simpleAxios.interceptors.response.use((res) => {
+      console.log('%c🚀 ~ method: response ~', 'color: #F25F5C;font-weight: bold;', res)
+      return res.statusCode === 200 ? res : Promise.reject(res)
+    }, (err) => {
+      console.error('response:', err)
+      return Promise.reject(err)
+    })
 
     SimpleAxios<{data: any, state: number}>({
       url: '',

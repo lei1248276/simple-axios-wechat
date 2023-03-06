@@ -118,7 +118,7 @@ function dispatchRequest(config: RequestConfig): Promise<Response<ResponseResult
 
 interface SimpleAxiosInstance extends SimpleAxios{
   <T extends ResponseResult>(config: RequestConfig): Promise<Response<T>>
-  defaults: DefaultConfig
+  defaults: DefaultConfig & { header: Record<string, any>}
   create(config?: DefaultConfig): SimpleAxiosInstance
 }
 
