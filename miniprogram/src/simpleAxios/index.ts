@@ -119,18 +119,17 @@ function dispatchRequest(config: RequestConfig): Promise<Response<ResponseResult
 interface SimpleAxiosInstance extends SimpleAxios{
   <T extends ResponseResult>(config: RequestConfig): Promise<Response<T>>
   defaults: DefaultConfig & { header: Record<string, any>}
-  create(config?: DefaultConfig): SimpleAxiosInstance
 }
 
 function createInstance(defaultConfig: DefaultConfig): SimpleAxiosInstance {
   const context = new SimpleAxios(defaultConfig)
-  const instance = SimpleAxios.prototype.request.bind(context) as SimpleAxiosInstance
+  const instance = SimpleAxios.prototype.request.bind(context)
 
-  instance.create = function(instanceConfig?: DefaultConfig) {
-    return createInstance({ ...defaultConfig, ...instanceConfig })
-  }
+  return Object.assign(instance, extend(context, SimpleAxios.prototype)) as SimpleAxiosInstance
+}
 
-  return Object.assign(instance, extend(context, SimpleAxios.prototype), context)
+interface SimpleAxiosStatic extends SimpleAxiosInstance{
+  create(config?: DefaultConfig): SimpleAxiosInstance
 }
 
 const defaults: DefaultConfig = {
@@ -138,6 +137,10 @@ const defaults: DefaultConfig = {
   header: {}
 }
 
-const simpleAxios = createInstance(defaults)
+const simpleAxios: SimpleAxiosStatic = Object.assign(createInstance(defaults), {
+  create(instanceConfig?: DefaultConfig) {
+    return createInstance({ ...defaults, ...instanceConfig })
+  }
+})
 
 export default simpleAxios
