@@ -10,18 +10,18 @@ import {
   extend
 } from './utils'
 
-class SimpleAxios {
-  defaults: DefaultConfig | undefined
+class SimpleAxios<THeader extends Record<string, any>> {
+  defaults: DefaultConfig
   interceptors
-  constructor(instanceConfig?: DefaultConfig) {
+  constructor(instanceConfig: DefaultConfig) {
     this.defaults = instanceConfig
     this.interceptors = {
-      request: new Interceptors<RequestConfig>(),
+      request: new Interceptors<RequestConfig<THeader>>(),
       response: new Interceptors<Response<ResponseResult>>()
     }
   }
 
-  request<T extends ResponseResult>(config: RequestConfig): Promise<Response<T>> {
+  request<TResult extends ResponseResult>(config: RequestConfig): Promise<Response<TResult>> {
     config = { ...this.defaults, ...config }
     config.url = isExternal(config.url) ? config.url : config.baseURL + config.url
 
@@ -47,44 +47,44 @@ class SimpleAxios {
     return promise
   }
 
-  options<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<T>({ method: 'OPTIONS', url, ...config })
+  options<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+    return this.request<TResult>({ method: 'OPTIONS', url, ...config })
   }
 
-  get<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<T>({ method: 'GET', url, ...config })
+  get<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+    return this.request<TResult>({ method: 'GET', url, ...config })
   }
 
-  head<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<T>({ method: 'HEAD', url, ...config })
+  head<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+    return this.request<TResult>({ method: 'HEAD', url, ...config })
   }
 
-  post<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<T>({ method: 'POST', url, ...config })
+  post<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+    return this.request<TResult>({ method: 'POST', url, ...config })
   }
 
-  put<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<T>({ method: 'PUT', url, ...config })
+  put<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+    return this.request<TResult>({ method: 'PUT', url, ...config })
   }
 
-  delete<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<T>({ method: 'DELETE', url, ...config })
+  delete<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+    return this.request<TResult>({ method: 'DELETE', url, ...config })
   }
 
-  trace<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<T>({ method: 'TRACE', url, ...config })
+  trace<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+    return this.request<TResult>({ method: 'TRACE', url, ...config })
   }
 
-  connect<T extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<T>({ method: 'CONNECT', url, ...config })
+  connect<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+    return this.request<TResult>({ method: 'CONNECT', url, ...config })
   }
 }
-class Interceptors<V> {
-  handlers: InterceptorsHandler<V>[] = []
+class Interceptors<TValue> {
+  handlers: InterceptorsHandler<TValue>[] = []
 
   use(
-    fulfilled?: InterceptorsHandler<V>['fulfilled'] | null,
-    rejected?: InterceptorsHandler<V>['rejected'] | null
+    fulfilled?: InterceptorsHandler<TValue>['fulfilled'] | null,
+    rejected?: InterceptorsHandler<TValue>['rejected'] | null
   ) {
     this.handlers.push({ fulfilled: fulfilled || null, rejected: rejected || null })
 
@@ -99,7 +99,7 @@ class Interceptors<V> {
     this.handlers = []
   }
 
-  forEach(fn: (handler: InterceptorsHandler<V>) => void) {
+  forEach(fn: (handler: InterceptorsHandler<TValue>) => void) {
     this.handlers.forEach((v) => { fn(v) })
   }
 }
@@ -116,30 +116,30 @@ function dispatchRequest(config: RequestConfig): Promise<Response<ResponseResult
   })
 }
 
-interface SimpleAxiosInstance extends SimpleAxios{
-  <T extends ResponseResult>(config: RequestConfig): Promise<Response<T>>
-  defaults: DefaultConfig & { header: Record<string, any>}
+interface SimpleAxiosInstance<THeader extends Record<string, any>> extends SimpleAxios<THeader>{
+  <TResult extends ResponseResult>(config: RequestConfig): Promise<Response<TResult>>
+  defaults: Omit<DefaultConfig, 'header'> & { header: Record<string, any>}
 }
 
-function createInstance(defaultConfig: DefaultConfig): SimpleAxiosInstance {
-  const context = new SimpleAxios(defaultConfig)
+function createInstance<THeader extends Record<string, any>>(defaultConfig: THeader): SimpleAxiosInstance<THeader> {
+  const context = new SimpleAxios<THeader>(defaultConfig)
   const instance = SimpleAxios.prototype.request.bind(context)
 
-  return Object.assign(instance, extend(context, SimpleAxios.prototype)) as SimpleAxiosInstance
+  return Object.assign(instance, extend(context, SimpleAxios.prototype)) as SimpleAxiosInstance<THeader>
 }
 
-interface SimpleAxiosStatic extends SimpleAxiosInstance{
-  create(config?: DefaultConfig): SimpleAxiosInstance
+interface SimpleAxiosStatic extends SimpleAxiosInstance<Record<string, any>>{
+  create<THeader extends Record<string, any>>(config?: DefaultConfig<THeader>): SimpleAxiosInstance<THeader>
 }
 
-const defaults: DefaultConfig = {
+const globalDefaults: DefaultConfig = {
   baseURL: '',
   header: {}
 }
 
-const simpleAxios: SimpleAxiosStatic = Object.assign(createInstance(defaults), {
-  create(instanceConfig?: DefaultConfig) {
-    return createInstance({ ...defaults, ...instanceConfig })
+const simpleAxios: SimpleAxiosStatic = Object.assign(createInstance(globalDefaults), {
+  create<THeader extends Record<string, any>>(instanceConfig?: DefaultConfig<THeader>) {
+    return createInstance<THeader>({ ...globalDefaults, ...instanceConfig } as THeader)
   }
 })
 

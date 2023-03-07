@@ -12,7 +12,7 @@ App({
 
     SimpleAxios.defaults.baseURL = 'http://httpbin.org/get'
     SimpleAxios.defaults.timeout = 10 * 1000
-    SimpleAxios.defaults.header = { token: '???' }
+    SimpleAxios.defaults.header.token = ''
     /* SimpleAxios.defaults.adapter = function adapter(config) {
       return new Promise((resolve, reject) => {
         const RequestTask = wx.request({
@@ -33,7 +33,7 @@ App({
     console.log('%c🚀 ~ method: onLaunch ~', 'color: #F25F5C;font-weight: bold;', { SimpleAxios })
 
     SimpleAxios.interceptors.request.use((res) => {
-      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res)
+      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res.header)
       return res
       // return Promise.reject(res)
     }, (err) => {
@@ -50,12 +50,13 @@ App({
     })
 
     const simpleAxios = SimpleAxios.create({
-      baseURL: 'http://httpbin.org/post'
+      baseURL: 'http://httpbin.org/post',
+      header: { token: '', state: 1, err: '???' }
     })
     console.log('%c🚀 ~ method: onLaunch ~', 'color: #F25F5C;font-weight: bold;', { simpleAxios })
 
     simpleAxios.interceptors.request.use((res) => {
-      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res)
+      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res.header!.token)
       return res
     }, (err) => {
       console.error('request:', err)
@@ -70,7 +71,7 @@ App({
       return Promise.reject(err)
     })
 
-    SimpleAxios<{data: any, state: number}>({
+    simpleAxios.request<{data: any, state: number}>({
       url: '',
       method: 'GET',
       getRequestTask: (task) => {
