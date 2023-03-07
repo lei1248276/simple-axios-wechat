@@ -1,5 +1,5 @@
 # simple-axios-wechat
--  简易的axios微信小程序版使用typescript实现
+-  小于1kb的简易的axios微信小程序版使用typescript实现
 
 ## 目录
 - [安装](#Installing)
@@ -36,6 +36,8 @@ $ yarn add simple-axios-wechat
 import SimpleAxios from 'simple-axios-wechat'
 
 SimpleAxios<{result: any}>(config)
+  .then(res => { console.log(res) })
+  .catch(err => { console.error(err) })
 ```
 
 ### method别名
@@ -56,39 +58,23 @@ SimpleAxios<{result: any}>(config)
 import SimpleAxios from 'simple-axios-wechat'
 // 默认 get 请求
 SimpleAxios<{result: string}>({ url: 'http://example.org/get' })
-  .then(res => {
-    console.log(res)
-  })
-  .catch(err => {
-    console.error(err)
-  })
+  .then(res => { console.log(res) })
+  .catch(err => { console.error(err) })
 
 SimpleAxios.get<{result: string}>('http://example.org/get')
-  .then(res => {
-    console.log(res)
-  })
-  .catch(err => {
-    console.error(err)
-  })
+  .then(res => { console.log(res) })
+  .catch(err => { console.error(err) })
 ```
 
 ### post请求并定义返回数据类型
 ```js
 SimpleAxios<{result: string}>({ url: 'http://example.org/get', method: 'POST' })
-  .then(res => {
-    console.log(res)
-  })
-  .catch(err => {
-    console.error(err)
-  })
+  .then(res => { console.log(res) })
+  .catch(err => { console.error(err) })
 
 SimpleAxios.post<{result: string}>('http://example.org/post', { data: {} })
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.error(err);
-  });
+  .then((res) => { console.log(res) })
+  .catch((err) => { console.error(err) });
 ```
 
 ### 全局默认值
@@ -118,14 +104,14 @@ const simpleAxios = SimpleAxios.create({
   baseURL: 'http://example.org/get'
 })
 
-SimpleAxios.interceptors.request.use((config) => {
+simpleAxios.interceptors.request.use((config) => {
   // 干点啥?
   return config
 }, (err) => {
   return Promise.reject(err)
 })
 
-SimpleAxios.interceptors.response.use((response) => {
+simpleAxios.interceptors.response.use((response) => {
   // 总得干点啥吧?
   return response
 }, (err) => {
@@ -134,7 +120,7 @@ SimpleAxios.interceptors.response.use((response) => {
 ```
 
 ### 获取RequestTask
-- [RequestTask](https://developers.weixin.qq.com/miniprogram/dev/api/network/request/RequestTask.html)（比如用来 abort()）
+- 在请求config配置项中通过回调获取[RequestTask](https://developers.weixin.qq.com/miniprogram/dev/api/network/request/RequestTask.html)（比如用来 abort()）
 ```ts
 import SimpleAxios from 'simple-axios-wechat'
 

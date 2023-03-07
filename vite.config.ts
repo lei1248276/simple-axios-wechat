@@ -4,7 +4,9 @@ import dts from 'vite-plugin-dts'
 
 export default defineConfig({
   plugins: [
-    dts()
+    dts({
+      outputDir: 'types'
+    })
   ],
   build: {
     lib: {
