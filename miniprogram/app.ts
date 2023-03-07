@@ -33,7 +33,7 @@ App({
     console.log('%c🚀 ~ method: onLaunch ~', 'color: #F25F5C;font-weight: bold;', { SimpleAxios })
 
     SimpleAxios.interceptors.request.use((res) => {
-      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res.header)
+      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res.header.code)
       return res
       // return Promise.reject(res)
     }, (err) => {
@@ -56,7 +56,7 @@ App({
     console.log('%c🚀 ~ method: onLaunch ~', 'color: #F25F5C;font-weight: bold;', { simpleAxios })
 
     simpleAxios.interceptors.request.use((res) => {
-      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res.header!.token)
+      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res.header.token)
       return res
     }, (err) => {
       console.error('request:', err)

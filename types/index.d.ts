@@ -1,8 +1,10 @@
 import type { DefaultConfig, RequestConfig, Response, ResponseResult, InterceptorsHandler } from './types';
-declare class SimpleAxios<THeader extends Record<string, any>> {
+declare class SimpleAxios {
     defaults: DefaultConfig;
     interceptors: {
-        request: Interceptors<RequestConfig<THeader>>;
+        request: Interceptors<Omit<RequestConfig, "header"> & {
+            header: Record<string, any>;
+        }>;
         response: Interceptors<Response<ResponseResult>>;
     };
     constructor(instanceConfig: DefaultConfig);
@@ -23,14 +25,14 @@ declare class Interceptors<TValue> {
     clear(): void;
     forEach(fn: (handler: InterceptorsHandler<TValue>) => void): void;
 }
-interface SimpleAxiosInstance<THeader extends Record<string, any>> extends SimpleAxios<THeader> {
+interface SimpleAxiosInstance extends SimpleAxios {
     <TResult extends ResponseResult>(config: RequestConfig): Promise<Response<TResult>>;
     defaults: Omit<DefaultConfig, 'header'> & {
         header: Record<string, any>;
     };
 }
-interface SimpleAxiosStatic extends SimpleAxiosInstance<Record<string, any>> {
-    create<THeader extends Record<string, any>>(config?: DefaultConfig<THeader>): SimpleAxiosInstance<THeader>;
+interface SimpleAxiosStatic extends SimpleAxiosInstance {
+    create(config?: DefaultConfig): SimpleAxiosInstance;
 }
 declare const simpleAxios: SimpleAxiosStatic;
 export default simpleAxios;

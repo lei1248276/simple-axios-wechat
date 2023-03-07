@@ -10,13 +10,13 @@ import {
   extend
 } from './utils'
 
-class SimpleAxios<THeader extends Record<string, any>> {
+class SimpleAxios {
   defaults: DefaultConfig
   interceptors
   constructor(instanceConfig: DefaultConfig) {
     this.defaults = instanceConfig
     this.interceptors = {
-      request: new Interceptors<RequestConfig<THeader>>(),
+      request: new Interceptors<Omit<RequestConfig, 'header'> & { header: Record<string, any> }>(),
       response: new Interceptors<Response<ResponseResult>>()
     }
   }
@@ -116,20 +116,20 @@ function dispatchRequest(config: RequestConfig): Promise<Response<ResponseResult
   })
 }
 
-interface SimpleAxiosInstance<THeader extends Record<string, any>> extends SimpleAxios<THeader>{
+interface SimpleAxiosInstance extends SimpleAxios{
   <TResult extends ResponseResult>(config: RequestConfig): Promise<Response<TResult>>
-  defaults: Omit<DefaultConfig, 'header'> & { header: Record<string, any>}
+  defaults: Omit<DefaultConfig, 'header'> & { header: Record<string, any> }
 }
 
-function createInstance<THeader extends Record<string, any>>(defaultConfig: THeader): SimpleAxiosInstance<THeader> {
-  const context = new SimpleAxios<THeader>(defaultConfig)
+function createInstance(defaultConfig: DefaultConfig): SimpleAxiosInstance {
+  const context = new SimpleAxios(defaultConfig)
   const instance = SimpleAxios.prototype.request.bind(context)
 
-  return Object.assign(instance, extend(context, SimpleAxios.prototype)) as SimpleAxiosInstance<THeader>
+  return Object.assign(instance, extend(context, SimpleAxios.prototype)) as SimpleAxiosInstance
 }
 
-interface SimpleAxiosStatic extends SimpleAxiosInstance<Record<string, any>>{
-  create<THeader extends Record<string, any>>(config?: DefaultConfig<THeader>): SimpleAxiosInstance<THeader>
+interface SimpleAxiosStatic extends SimpleAxiosInstance{
+  create(config?: DefaultConfig): SimpleAxiosInstance
 }
 
 const globalDefaults: DefaultConfig = {
@@ -138,8 +138,8 @@ const globalDefaults: DefaultConfig = {
 }
 
 const simpleAxios: SimpleAxiosStatic = Object.assign(createInstance(globalDefaults), {
-  create<THeader extends Record<string, any>>(instanceConfig?: DefaultConfig<THeader>) {
-    return createInstance<THeader>({ ...globalDefaults, ...instanceConfig } as THeader)
+  create(instanceConfig?: DefaultConfig) {
+    return createInstance({ ...globalDefaults, ...instanceConfig })
   }
 })
 
