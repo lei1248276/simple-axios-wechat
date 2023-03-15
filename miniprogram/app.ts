@@ -33,7 +33,7 @@ App({
     console.log('%c🚀 ~ method: onLaunch ~', 'color: #F25F5C;font-weight: bold;', { SimpleAxios })
 
     SimpleAxios.interceptors.request.use((res) => {
-      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res.header.code)
+      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res.header!.code)
       return res
       // return Promise.reject(res)
     }, (err) => {
@@ -56,7 +56,7 @@ App({
     console.log('%c🚀 ~ method: onLaunch ~', 'color: #F25F5C;font-weight: bold;', { simpleAxios })
 
     simpleAxios.interceptors.request.use((res) => {
-      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res.header.token)
+      console.log('%c🚀 ~ method: request ~', 'color: #F25F5C;font-weight: bold;', res.header!.token)
       return res
     }, (err) => {
       console.error('request:', err)
@@ -65,7 +65,7 @@ App({
 
     simpleAxios.interceptors.response.use((res) => {
       console.log('%c🚀 ~ method: response ~', 'color: #F25F5C;font-weight: bold;', res)
-      return res.statusCode === 200 ? res : Promise.reject(res)
+      return res.statusCode === 200 ? res.data : Promise.reject(res)
     }, (err) => {
       console.error('response:', err)
       return Promise.reject(err)
@@ -78,7 +78,7 @@ App({
         console.log('%c🚀 ~ method: getRequestTask ~', 'color: #F25F5C;font-weight: bold;', task.abort())
       }
     })
-      .then(res => {
+      .then((res) => {
         console.log('%c🚀 ~ method: SimpleAxios ~', 'color: #F25F5C;font-weight: bold;', res)
       })
       .catch(err => {

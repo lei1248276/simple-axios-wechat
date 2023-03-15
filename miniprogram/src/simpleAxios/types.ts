@@ -14,6 +14,6 @@ export type ResponseResult = string | Record<string, any> | ArrayBuffer
 export interface Response<TResult extends ResponseResult> extends WechatMiniprogram.RequestSuccessCallbackResult<TResult> {}
 
 export interface InterceptorsHandler<TValue> {
-  fulfilled: ((value: TValue) => TValue | Promise<TValue>) | null
+  fulfilled: ((value: TValue) => any) | null
   rejected: ((error: any) => any) | null
 }

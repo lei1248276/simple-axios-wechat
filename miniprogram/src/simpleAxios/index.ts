@@ -16,12 +16,12 @@ class SimpleAxios {
   constructor(instanceConfig: DefaultConfig) {
     this.defaults = instanceConfig
     this.interceptors = {
-      request: new Interceptors<Omit<RequestConfig, 'header'> & { header: Record<string, any> }>(),
+      request: new Interceptors<RequestConfig>(),
       response: new Interceptors<Response<ResponseResult>>()
     }
   }
 
-  request<TResult extends ResponseResult>(config: RequestConfig): Promise<Response<TResult>> {
+  request<TResult extends ResponseResult>(config: RequestConfig): Promise<TResult> {
     config = { ...this.defaults, ...config }
     config.url = isExternal(config.url) ? config.url : config.baseURL + config.url
 
@@ -83,8 +83,8 @@ class Interceptors<TValue> {
   handlers: InterceptorsHandler<TValue>[] = []
 
   use(
-    fulfilled?: InterceptorsHandler<TValue>['fulfilled'] | null,
-    rejected?: InterceptorsHandler<TValue>['rejected'] | null
+    fulfilled: InterceptorsHandler<TValue>['fulfilled'] | null,
+    rejected: InterceptorsHandler<TValue>['rejected'] | null
   ) {
     this.handlers.push({ fulfilled: fulfilled || null, rejected: rejected || null })
 
@@ -137,7 +137,7 @@ const globalDefaults: DefaultConfig = {
   header: {}
 }
 
-const simpleAxios: SimpleAxiosStatic = Object.assign(createInstance(globalDefaults), {
+export const simpleAxios: SimpleAxiosStatic = Object.assign(createInstance(globalDefaults), {
   create(instanceConfig?: DefaultConfig) {
     return createInstance({ ...globalDefaults, ...instanceConfig })
   }
