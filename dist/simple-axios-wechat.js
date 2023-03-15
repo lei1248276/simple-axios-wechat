@@ -100,5 +100,6 @@ const c = {
   }
 });
 export {
-  q as default
+  q as default,
+  q as simpleAxios
 };

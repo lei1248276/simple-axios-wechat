@@ -2,25 +2,23 @@ import type { DefaultConfig, RequestConfig, Response, ResponseResult, Intercepto
 declare class SimpleAxios {
     defaults: DefaultConfig;
     interceptors: {
-        request: Interceptors<Omit<RequestConfig, "header"> & {
-            header: Record<string, any>;
-        }>;
+        request: Interceptors<RequestConfig>;
         response: Interceptors<Response<ResponseResult>>;
     };
     constructor(instanceConfig: DefaultConfig);
-    request<TResult extends ResponseResult>(config: RequestConfig): Promise<Response<TResult>>;
-    options<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<Response<TResult>>;
-    get<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<Response<TResult>>;
-    head<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<Response<TResult>>;
-    post<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<Response<TResult>>;
-    put<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<Response<TResult>>;
-    delete<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<Response<TResult>>;
-    trace<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<Response<TResult>>;
-    connect<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<Response<TResult>>;
+    request<TResult extends ResponseResult>(config: RequestConfig): Promise<TResult>;
+    options<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
+    get<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
+    head<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
+    post<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
+    put<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
+    delete<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
+    trace<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
+    connect<TResult extends ResponseResult>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
 }
 declare class Interceptors<TValue> {
     handlers: InterceptorsHandler<TValue>[];
-    use(fulfilled?: InterceptorsHandler<TValue>['fulfilled'] | null, rejected?: InterceptorsHandler<TValue>['rejected'] | null): number;
+    use(fulfilled: InterceptorsHandler<TValue>['fulfilled'] | null, rejected: InterceptorsHandler<TValue>['rejected'] | null): number;
     eject(index: number): void;
     clear(): void;
     forEach(fn: (handler: InterceptorsHandler<TValue>) => void): void;
@@ -34,5 +32,5 @@ interface SimpleAxiosInstance extends SimpleAxios {
 interface SimpleAxiosStatic extends SimpleAxiosInstance {
     create(config?: DefaultConfig): SimpleAxiosInstance;
 }
-declare const simpleAxios: SimpleAxiosStatic;
+export declare const simpleAxios: SimpleAxiosStatic;
 export default simpleAxios;

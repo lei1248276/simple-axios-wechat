@@ -13,6 +13,11 @@ export default defineConfig({
       entry: resolve(__dirname, 'miniprogram/src/simpleAxios/index.ts'),
       name: 'SimpleAxios',
       formats: ['es', 'cjs']
+    },
+    rollupOptions: {
+      output: {
+        exports: 'named'
+      }
     }
   }
 })
