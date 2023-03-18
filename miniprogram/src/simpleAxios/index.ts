@@ -2,7 +2,6 @@ import type {
   DefaultConfig,
   RequestConfig,
   Response,
-  ResponseResult,
   InterceptorsHandler
 } from './types'
 import {
@@ -17,11 +16,13 @@ class SimpleAxios {
     this.defaults = instanceConfig
     this.interceptors = {
       request: new Interceptors<RequestConfig>(),
-      response: new Interceptors<Response<ResponseResult>>()
+      response: new Interceptors<Response<string | Record<string, any> | ArrayBuffer>>()
     }
   }
 
-  request<TResult extends ResponseResult>(config: RequestConfig): Promise<TResult> {
+  request<
+    TResult extends string | Record<string, any> | ArrayBuffer
+  >(config: RequestConfig): Promise<TResult> {
     config = { ...this.defaults, ...config }
     config.url = isExternal(config.url) ? config.url : config.baseURL + config.url
 
@@ -47,35 +48,51 @@ class SimpleAxios {
     return promise
   }
 
-  options<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+  options<
+    TResult extends string | Record<string, any> | ArrayBuffer
+  >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<TResult>({ method: 'OPTIONS', url, ...config })
   }
 
-  get<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+  get<
+    TResult extends string | Record<string, any> | ArrayBuffer
+  >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<TResult>({ method: 'GET', url, ...config })
   }
 
-  head<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+  head<
+    TResult extends string | Record<string, any> | ArrayBuffer
+  >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<TResult>({ method: 'HEAD', url, ...config })
   }
 
-  post<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+  post<
+    TResult extends string | Record<string, any> | ArrayBuffer
+  >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<TResult>({ method: 'POST', url, ...config })
   }
 
-  put<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+  put<
+    TResult extends string | Record<string, any> | ArrayBuffer
+  >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<TResult>({ method: 'PUT', url, ...config })
   }
 
-  delete<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+  delete<
+    TResult extends string | Record<string, any> | ArrayBuffer
+  >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<TResult>({ method: 'DELETE', url, ...config })
   }
 
-  trace<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+  trace<
+    TResult extends string | Record<string, any> | ArrayBuffer
+  >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<TResult>({ method: 'TRACE', url, ...config })
   }
 
-  connect<TResult extends ResponseResult>(url = '', config: Omit<RequestConfig, 'url'> = {}) {
+  connect<
+    TResult extends string | Record<string, any> | ArrayBuffer
+  >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
     return this.request<TResult>({ method: 'CONNECT', url, ...config })
   }
 }
@@ -104,7 +121,7 @@ class Interceptors<TValue> {
   }
 }
 
-function dispatchRequest(config: RequestConfig): Promise<Response<ResponseResult>> {
+function dispatchRequest(config: RequestConfig): Promise<Response<string | Record<string, any> | ArrayBuffer>> {
   return new Promise((resolve, reject) => {
     const RequestTask = wx.request({
       ...config,
@@ -117,7 +134,7 @@ function dispatchRequest(config: RequestConfig): Promise<Response<ResponseResult
 }
 
 interface SimpleAxiosInstance extends SimpleAxios{
-  <TResult extends ResponseResult>(config: RequestConfig): Promise<Response<TResult>>
+  <TResult extends string | Record<string, any> | ArrayBuffer>(config: RequestConfig): Promise<Response<TResult>>
   defaults: Omit<DefaultConfig, 'header'> & { header: Record<string, any> }
 }
 

@@ -71,7 +71,7 @@ App({
       return Promise.reject(err)
     })
 
-    simpleAxios.request<{data: any, state: number}>({
+    simpleAxios.request({
       url: '',
       method: 'GET',
       getRequestTask: (task) => {
@@ -79,7 +79,8 @@ App({
       }
     })
       .then((res) => {
-        console.log('%c🚀 ~ method: SimpleAxios ~', 'color: #F25F5C;font-weight: bold;', res)
+        if (typeof res === 'string' || (res instanceof ArrayBuffer)) return
+        console.log('%c🚀 ~ method: SimpleAxios ~', 'color: #F25F5C;font-weight: bold;', res.data)
       })
       .catch(err => {
         console.error(err)
