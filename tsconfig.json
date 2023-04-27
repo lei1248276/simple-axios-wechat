@@ -19,7 +19,7 @@
     ]
   },
   "include": [
-    "./miniprogram/*.ts"
+    "./miniprogram/**/*.ts"
   ],
   "exclude": [
     "node_modules"

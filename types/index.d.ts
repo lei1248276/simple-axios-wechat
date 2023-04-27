@@ -6,15 +6,15 @@ declare class SimpleAxios {
         response: Interceptors<Response<string | Record<string, any> | ArrayBuffer>>;
     };
     constructor(instanceConfig: DefaultConfig);
-    request<TResult extends string | Record<string, any> | ArrayBuffer>(config: RequestConfig): Promise<TResult>;
-    options<TResult extends string | Record<string, any> | ArrayBuffer>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
-    get<TResult extends string | Record<string, any> | ArrayBuffer>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
-    head<TResult extends string | Record<string, any> | ArrayBuffer>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
-    post<TResult extends string | Record<string, any> | ArrayBuffer>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
-    put<TResult extends string | Record<string, any> | ArrayBuffer>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
-    delete<TResult extends string | Record<string, any> | ArrayBuffer>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
-    trace<TResult extends string | Record<string, any> | ArrayBuffer>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
-    connect<TResult extends string | Record<string, any> | ArrayBuffer>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<TResult>;
+    request<T extends string | Record<string, any> | ArrayBuffer, R = Response<T>>(config: RequestConfig): Promise<R>;
+    options<T extends string | Record<string, any> | ArrayBuffer, R = Response<T>>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<R>;
+    get<T extends string | Record<string, any> | ArrayBuffer, R = Response<T>>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<R>;
+    head<T extends string | Record<string, any> | ArrayBuffer, R = Response<T>>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<R>;
+    post<T extends string | Record<string, any> | ArrayBuffer, R = Response<T>>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<R>;
+    put<T extends string | Record<string, any> | ArrayBuffer, R = Response<T>>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<R>;
+    delete<T extends string | Record<string, any> | ArrayBuffer, R = Response<T>>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<R>;
+    trace<T extends string | Record<string, any> | ArrayBuffer, R = Response<T>>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<R>;
+    connect<T extends string | Record<string, any> | ArrayBuffer, R = Response<T>>(url?: string, config?: Omit<RequestConfig, 'url'>): Promise<R>;
 }
 declare class Interceptors<TValue> {
     handlers: InterceptorsHandler<TValue>[];
@@ -24,7 +24,7 @@ declare class Interceptors<TValue> {
     forEach(fn: (handler: InterceptorsHandler<TValue>) => void): void;
 }
 interface SimpleAxiosInstance extends SimpleAxios {
-    <TResult extends string | Record<string, any> | ArrayBuffer>(config: RequestConfig): Promise<Response<TResult>>;
+    <T extends string | Record<string, any> | ArrayBuffer, R = Response<T>>(config: RequestConfig): Promise<R>;
     defaults: Omit<DefaultConfig, 'header'> & {
         header: Record<string, any>;
     };
