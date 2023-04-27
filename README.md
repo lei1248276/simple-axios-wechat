@@ -11,7 +11,7 @@
 - [全局默认值](#全局默认值)
 - [创建实例](#创建实例)
 - [拦截器](#拦截器)
-- [获取RequestTask](#获取RequestTask)
+- [获取RequestTask（中断请求、监听 HTTP）](#获取RequestTask)
 - [自定义请求方法](#自定义请求方法)
 
 ## Installing

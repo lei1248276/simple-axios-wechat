@@ -19,7 +19,7 @@
     ]
   },
   "include": [
-    "./miniprogram/src/simpleAxios/*.ts"
+    "./miniprogram/*.ts"
   ],
   "exclude": [
     "node_modules"

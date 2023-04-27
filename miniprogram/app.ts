@@ -49,6 +49,15 @@ App({
       return Promise.reject(err)
     })
 
+    SimpleAxios({
+      url: '',
+      method: 'GET'
+    }).then(res => {
+      console.log(res)
+    }).catch(err => {
+      console.log(err)
+    })
+
     const simpleAxios = SimpleAxios.create({
       baseURL: 'http://httpbin.org/post',
       header: { token: '', state: 1, err: '???' }
@@ -71,7 +80,7 @@ App({
       return Promise.reject(err)
     })
 
-    simpleAxios.request({
+    simpleAxios.request<any, { state: number, msg: string }>({
       url: '',
       method: 'GET',
       getRequestTask: (task) => {
@@ -80,7 +89,21 @@ App({
     })
       .then((res) => {
         if (typeof res === 'string' || (res instanceof ArrayBuffer)) return
-        console.log('%c🚀 ~ method: SimpleAxios ~', 'color: #F25F5C;font-weight: bold;', res.data)
+        console.log('%c🚀 ~ method: SimpleAxios ~', 'color: #F25F5C;font-weight: bold;', res)
+      })
+      .catch(err => {
+        console.error(err)
+      })
+
+    simpleAxios.get<{ state: number, msg: string }>('', {
+      method: 'GET',
+      getRequestTask: (task) => {
+        console.log('%c🚀 ~ method: getRequestTask ~', 'color: #F25F5C;font-weight: bold;', task.abort())
+      }
+    })
+      .then((res) => {
+        if (typeof res === 'string' || (res instanceof ArrayBuffer)) return
+        console.log('%c🚀 ~ method: SimpleAxios ~', 'color: #F25F5C;font-weight: bold;', res)
       })
       .catch(err => {
         console.error(err)

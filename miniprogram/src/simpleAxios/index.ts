@@ -21,8 +21,9 @@ class SimpleAxios {
   }
 
   request<
-    TResult extends string | Record<string, any> | ArrayBuffer
-  >(config: RequestConfig): Promise<TResult> {
+    T extends string | Record<string, any> | ArrayBuffer,
+    R = Response<T>
+  >(config: RequestConfig): Promise<R> {
     config = { ...this.defaults, ...config }
     config.url = isExternal(config.url) ? config.url : config.baseURL + config.url
 
@@ -45,55 +46,63 @@ class SimpleAxios {
       promise = promise.then(chain[i++], chain[i++])
     }
 
-    return promise
+    return promise as Promise<R>
   }
 
   options<
-    TResult extends string | Record<string, any> | ArrayBuffer
+    T extends string | Record<string, any> | ArrayBuffer,
+    R = Response<T>
   >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<TResult>({ method: 'OPTIONS', url, ...config })
+    return this.request<T, R>({ method: 'OPTIONS', url, ...config })
   }
 
   get<
-    TResult extends string | Record<string, any> | ArrayBuffer
+    T extends string | Record<string, any> | ArrayBuffer,
+    R = Response<T>
   >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<TResult>({ method: 'GET', url, ...config })
+    return this.request<T, R>({ method: 'GET', url, ...config })
   }
 
   head<
-    TResult extends string | Record<string, any> | ArrayBuffer
+    T extends string | Record<string, any> | ArrayBuffer,
+    R = Response<T>
   >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<TResult>({ method: 'HEAD', url, ...config })
+    return this.request<T, R>({ method: 'HEAD', url, ...config })
   }
 
   post<
-    TResult extends string | Record<string, any> | ArrayBuffer
+    T extends string | Record<string, any> | ArrayBuffer,
+    R = Response<T>
   >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<TResult>({ method: 'POST', url, ...config })
+    return this.request<T, R>({ method: 'POST', url, ...config })
   }
 
   put<
-    TResult extends string | Record<string, any> | ArrayBuffer
+    T extends string | Record<string, any> | ArrayBuffer,
+    R = Response<T>
   >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<TResult>({ method: 'PUT', url, ...config })
+    return this.request<T, R>({ method: 'PUT', url, ...config })
   }
 
   delete<
-    TResult extends string | Record<string, any> | ArrayBuffer
+    T extends string | Record<string, any> | ArrayBuffer,
+    R = Response<T>
   >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<TResult>({ method: 'DELETE', url, ...config })
+    return this.request<T, R>({ method: 'DELETE', url, ...config })
   }
 
   trace<
-    TResult extends string | Record<string, any> | ArrayBuffer
+    T extends string | Record<string, any> | ArrayBuffer,
+    R = Response<T>
   >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<TResult>({ method: 'TRACE', url, ...config })
+    return this.request<T, R>({ method: 'TRACE', url, ...config })
   }
 
   connect<
-    TResult extends string | Record<string, any> | ArrayBuffer
+    T extends string | Record<string, any> | ArrayBuffer,
+    R = Response<T>
   >(url = '', config: Omit<RequestConfig, 'url'> = {}) {
-    return this.request<TResult>({ method: 'CONNECT', url, ...config })
+    return this.request<T, R>({ method: 'CONNECT', url, ...config })
   }
 }
 class Interceptors<TValue> {
@@ -134,7 +143,11 @@ function dispatchRequest(config: RequestConfig): Promise<Response<string | Recor
 }
 
 interface SimpleAxiosInstance extends SimpleAxios{
-  <TResult extends string | Record<string, any> | ArrayBuffer>(config: RequestConfig): Promise<Response<TResult>>
+  <
+    T extends string | Record<string, any> | ArrayBuffer,
+    R = Response<T>
+  >(config: RequestConfig): Promise<R>
+
   defaults: Omit<DefaultConfig, 'header'> & { header: Record<string, any> }
 }
 
